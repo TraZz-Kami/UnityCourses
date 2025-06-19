@@ -9,16 +9,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private GameObject focalPoint;
     [SerializeField] private GameObject powerupIndicator;
+    [SerializeField] private InputActionReference  movementAction;
     
     private float movement;
     private bool hasPowerup = false;
     private float powerupStrength = 15f;
     
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        movement = context.ReadValue<Vector2>().y;
-    }
-    
+    // public void OnMove(InputAction.CallbackContext context)
+    // {
+    //     movement = context.ReadValue<Vector2>().y;
+    // }
+    //
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        movement = movementAction.action.ReadValue<Vector2>().y;
         rb.AddForce(focalPoint.transform.forward * (moveSpeed * movement));
         powerupIndicator.transform.position = transform.position + new Vector3(0, -0.5f, 0);
     }
