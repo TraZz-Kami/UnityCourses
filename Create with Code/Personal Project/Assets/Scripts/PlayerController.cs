@@ -8,12 +8,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera camera;
-    // [SerializeField] private Animator animator;
+    [SerializeField] private GameObject towerPrefab;
     
     private Vector2 moveInput;
     private Vector2 lookInput;
     private bool isGamepad;
     private Quaternion lookRotation;
+    private int coins;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -82,6 +83,31 @@ public class PlayerController : MonoBehaviour
             lookRotation = Quaternion.LookRotation(new Vector3(lookInput.x, 0, lookInput.y));
         }
         rb.MoveRotation(lookRotation);
+    }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+            coins++;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("CampFire"))
+        {
+            //
+        }
+        else if (other.gameObject.CompareTag("TowerBase"))
+        {
+            if (coins >= 3)
+            {
+                coins -= 3;
+                other.gameObject.SetActive(false);
+                Tower.CreateTower(towerPrefab, other.transform.position, towerPrefab.transform.rotation);
+            }
+        }
     }
 }
