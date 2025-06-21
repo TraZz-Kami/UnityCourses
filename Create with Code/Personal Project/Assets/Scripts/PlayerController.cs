@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Camera camera;
     [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private Animator animator;
     
     private Vector2 moveInput;
     private Vector2 lookInput;
@@ -59,10 +60,13 @@ public class PlayerController : MonoBehaviour
            
             // Apply movement and rotation with move
             rb.MovePosition(rb.position + movement * (moveSpeed * Time.deltaTime));
+            
+            animator.SetFloat("Speed_f", movement.magnitude);
         }
         else
         {
             rb.linearVelocity = Vector3.zero;
+            animator.SetFloat("Speed_f", 0);
         }
     }
     
@@ -87,11 +91,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Coin"))
-        {
-            Destroy(other.gameObject);
-            coins++;
-        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -108,6 +108,11 @@ public class PlayerController : MonoBehaviour
                 other.gameObject.SetActive(false);
                 Tower.CreateTower(towerPrefab, other.transform.position, towerPrefab.transform.rotation);
             }
+        }
+        else if (other.gameObject.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+            coins++;
         }
     }
 }
