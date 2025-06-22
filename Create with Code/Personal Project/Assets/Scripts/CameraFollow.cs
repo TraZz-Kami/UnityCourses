@@ -1,16 +1,23 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Transform target;
+    [SerializeField] private Vector3 offset;
+    [SerializeField] private float speed;
 
-    // Update is called once per frame
-    void Update()
+    private void LateUpdate()
     {
-        
+       // Translate the iso camera to the target position with offset
+         if (target != null)
+         {
+              Vector3 desiredPosition = target.position + offset;
+              transform.position = desiredPosition;
+         }
+         else
+         {
+              Debug.LogWarning("Target is not assigned in CameraFollow script.");
+         }
     }
 }

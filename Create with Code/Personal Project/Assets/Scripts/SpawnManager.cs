@@ -28,14 +28,12 @@ public class SpawnManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        SpawnEnemyWave(waveNumber);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(EnemyCount == 0 && !waveStarted)
+        if(EnemyCount <= 0 && !waveStarted && GameManager.Instance.IsGameStarted)
         {
             waveStarted = true; // Prevent multiple waves from starting at the same time
             StartCoroutine(StartWave());
@@ -70,12 +68,14 @@ public class SpawnManager : MonoBehaviour
             Instantiate(enemyPrefab, GetRandomSpawnPosition(), enemyPrefab.transform.rotation);
         }
         EnemyCount = enemyCount; // Update the enemy count
+        GameManager.Instance.UpdateEnemyText(EnemyCount, waveNumber);
         waveNumber++;
         waveStarted = false;
     }
     
     private IEnumerator StartWave()
     {
+        GameManager.Instance.UpdateNextWaveText(waveNumber, 2);
         WaitForSeconds seconds = new WaitForSeconds(2f);
         yield return seconds; // Wait for 2 seconds before spawning the next wave
         SpawnEnemyWave(waveNumber);
@@ -87,5 +87,11 @@ public class SpawnManager : MonoBehaviour
         {
             EnemyCount--;
         }
+    }
+
+    public void SetDifficulty(int difficulty)
+    {
+        waveNumber = difficulty;
+        StartCoroutine(StartWave());
     }
 }

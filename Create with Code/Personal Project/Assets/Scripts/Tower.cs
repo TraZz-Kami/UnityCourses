@@ -34,7 +34,7 @@ public class Tower : MonoBehaviour
         {
             if (!ennemies.Contains(other.gameObject))
                 ennemies.Add(other.gameObject);
-            Debug.Log(ennemies.Count);
+            // Debug.Log(ennemies.Count);
 
             if (!isFiring)
             {
@@ -70,6 +70,12 @@ public class Tower : MonoBehaviour
     {
         while (ennemies.Count > 0)
         {
+            if (!GameManager.Instance.IsGameStarted)
+            {
+                isFiring = false;
+                yield break; // Stop firing if the game is not started
+            }
+            
             GameObject[] ennemiesCopy = ennemies.ToArray();
 
             foreach (GameObject ennemy in ennemiesCopy)
@@ -85,7 +91,7 @@ public class Tower : MonoBehaviour
     
     public static void CreateTower(GameObject tower ,Vector3 position, Quaternion rotation)
     {
-        position.y = tower.transform.position.y;
+        position.y = 0.49f;
         Instantiate(tower, position, rotation);
     }
 }
