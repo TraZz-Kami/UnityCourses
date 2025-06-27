@@ -1821,7 +1821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &831533716
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2316,7 +2316,7 @@ MonoBehaviour:
   enemyCountText: {fileID: 1884238363}
   coinCountText: {fileID: 1257064845}
   healthCountText: {fileID: 979620824}
-  campFireHealthCountText: {fileID: 0}
+  campFireHealthCountText: {fileID: 485289674}
   waveCountText: {fileID: 1622800031}
   nextWaveText: {fileID: 1343046311}
   towerCoinText: {fileID: 1600516980}
@@ -2748,7 +2748,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1598498300
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4319,6 +4319,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 745244229369850482, guid: 248d62ee1e8409b40a1533e5027e7ae2, type: 3}
       propertyPath: camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 745244229369850482, guid: 248d62ee1e8409b40a1533e5027e7ae2, type: 3}
+      propertyPath: cameraPlayer
       value: 
       objectReference: {fileID: 330585545}
     - target: {fileID: 2113684521955204505, guid: 248d62ee1e8409b40a1533e5027e7ae2, type: 3}
