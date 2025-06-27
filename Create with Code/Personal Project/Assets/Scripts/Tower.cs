@@ -91,7 +91,7 @@ public class Tower : MonoBehaviour
     
     public static void CreateTower(GameObject tower ,Vector3 position, Quaternion rotation)
     {
-        position.y = 0.49f;
+        position.y = 1;
         Instantiate(tower, position, rotation);
     }
 }

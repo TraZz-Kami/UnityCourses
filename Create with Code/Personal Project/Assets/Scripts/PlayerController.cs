@@ -3,19 +3,17 @@ using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour
+// INHERITANCE: PlayerController inherits from Entity
+public class PlayerController : Entity
 {
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Camera camera;
+    [SerializeField] private Camera cameraPlayer;
     [SerializeField] private GameObject towerPrefab;
-    [SerializeField] private Animator animator;
 
     private Vector2 moveInput;
     private Vector2 lookInput;
     private bool isGamepad;
-    private Quaternion lookRotation;
     private int coins;
     private int health = 10;
 
@@ -48,7 +46,6 @@ public class PlayerController : MonoBehaviour
         else if (device is Pointer)
         {
             isGamepad = false;
-            // lookInput reste inchangé, on utilisera raycast sur Mouse.current.position
         }
     }
 
@@ -67,15 +64,16 @@ public class PlayerController : MonoBehaviour
         // Update UI with player stats
         GameManager.Instance.UpdatePlayerText(health, coins);
 
-        LookAtPointer();
-        HandleMovement();
+        // ABSTRACTION: call the base class method to handle movement and look
+        RotateTo(new Vector3(lookInput.x, 0f, lookInput.y));
+        MoveTo(new Vector3(moveInput.x, 0f, moveInput.y));
     }
 
-    private void HandleMovement()
+    // POLYMORPHISM: override the base class method to implement specific behavior for player
+    protected override void Move(Vector3 movement)
     {
         if (moveInput.sqrMagnitude > 0f)
         {
-            Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y);
             movement = Quaternion.Euler(0, 45, 0) * movement;
             movement.Normalize();
             rb.MovePosition(rb.position + movement * (moveSpeed * Time.deltaTime));
@@ -88,24 +86,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void LookAtPointer()
+    // POLYMORPHISM: override the base class method to implement specific behavior for player
+    protected override void Look(Vector3 lookDirection)
     {
         if (isGamepad)
         {
-            lookRotation = Quaternion.LookRotation(new Vector3(lookInput.x, 0f, lookInput.y));
+            LookRotation = Quaternion.LookRotation(lookDirection);
         }
         else
         {
             Plane ground = new Plane(Vector3.up, transform.position);
-            Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            Ray ray = cameraPlayer.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (ground.Raycast(ray, out float enter))
             {
                 Vector3 hitPoint = ray.GetPoint(enter);
-                lookRotation = Quaternion.LookRotation(hitPoint - transform.position);
+                LookRotation = Quaternion.LookRotation(hitPoint - transform.position);
             }
         }
 
-        rb.MoveRotation(lookRotation);
+        rb.MoveRotation(LookRotation);
 
     }
 
@@ -114,17 +113,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            animator.SetInteger(1, 1);
-            health--;
-            GameManager.Instance.UpdatePlayerText(health, coins);
-            if (health <= 0)
-            {
-                // Handle player death
-                Debug.Log("Player has died.");
-                animator.SetBool("Dead_b", true);
-                animator.enabled = false;
-                GameManager.Instance.GameOver();
-            }
+            TakeDamage(1);
         }
     }
 
@@ -165,6 +154,22 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
     }
+    
+    // POLYMORPHISM: override the base class method to implement specific behavior for player
+    protected override void TakeDamage(int amount, bool isEnemy = false)
+    {            
+        animator.SetInteger(1, 1);
+        health -= amount;
+        GameManager.Instance.UpdatePlayerText(health, coins);
+    
+        if (health <= 0)
+        {
+            animator.SetBool("Dead_b", true);
+            animator.enabled = false;
+            GameManager.Instance.GameOver();
+        }
+    }
+
 
     private void OnTriggerExit(Collider other)
     {

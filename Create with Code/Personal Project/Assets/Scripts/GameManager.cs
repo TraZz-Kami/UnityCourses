@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gamePanel;
     [SerializeField] private SpawnManager spawnManager;
 
+    // ENCAPSULATION: The IsGameStarted property is private set to prevent external modification
     public bool IsGameStarted { get; private set; }
     private float spawnRate = 1f;
 
@@ -97,6 +98,7 @@ public class GameManager : MonoBehaviour
         gamePanel.SetActive(true);
         mainMenuPanel.SetActive(false);
         GameOverPanel.gameObject.SetActive(false);
+        UpdateCampfireText(5);
         UpdatePlayerText(10, 0);
         UpdateEnemyText(0, 1);
         nextWaveText.gameObject.SetActive(false);
